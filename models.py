@@ -8,7 +8,7 @@ import json
 db = SQLAlchemy()
 
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = postgres://xcjngabiwfokhv:c87d6974f39d3b174c73ddafb29eff6535fa71179a4d805229e5546378b89c5a@ec2-34-202-88-122.compute-1.amazonaws.com:5432/dc9t6gpgtl9pc6
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgres://xcjngabiwfokhv:c87d6974f39d3b174c73ddafb29eff6535fa71179a4d805229e5546378b89c5a@ec2-34-202-88-122.compute-1.amazonaws.com:5432/dc9t6gpgtl9pc6"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
