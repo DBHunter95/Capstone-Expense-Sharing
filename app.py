@@ -86,6 +86,9 @@ def create_app(test_config=None):
   @requires_auth('get:users')
   def get_users(payload):
     selection = User.query.all()
+    for user in selection:
+      user.total_owed = 0
+      user.update()
     users = [user.format() for user in selection]
 
     return jsonify({
@@ -125,7 +128,7 @@ def create_app(test_config=None):
     name = body.get('name', None)
     
     # try:
-    new_user = User(name=name, outstanding=json.dumps({}))
+    new_user = User(name=name, outstanding=json.dumps({}), total_owed=0)
     new_user.insert()
  
     # except:
