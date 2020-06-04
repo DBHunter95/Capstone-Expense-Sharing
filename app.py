@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import json
 
-from models import setup_db, Transaction, User, Group, members
-from auth import AuthError, requires_auth
+from .models import setup_db, Transaction, User, Group, members
+from .auth import AuthError, requires_auth
 
 # This is a function for updating user records when a group transaction is made.
 
@@ -86,6 +86,9 @@ def create_app(test_config=None):
   @requires_auth('get:users')
   def get_users(payload):
     selection = User.query.all()
+    for user in selection:
+      user.total_owed=0
+      outstanding=json.dumps({})
     users = [user.format() for user in selection]
 
     return jsonify({
