@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import json
 
-from .models import setup_db, Transaction, User, Group, members
-from .auth import AuthError, requires_auth
+from models import setup_db, Transaction, User, Group, members
+from auth import AuthError, requires_auth
 
 # This is a function for updating user records when a group transaction is made.
 
