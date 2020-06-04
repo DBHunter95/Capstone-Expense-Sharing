@@ -88,7 +88,8 @@ def create_app(test_config=None):
     selection = User.query.all()
     for user in selection:
       user.total_owed=0
-      outstanding=json.dumps({})
+      user.outstanding=json.dumps({})
+      user.update()
     users = [user.format() for user in selection]
 
     return jsonify({
