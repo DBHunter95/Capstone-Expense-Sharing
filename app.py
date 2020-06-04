@@ -38,7 +38,7 @@ def update_group_transaction(buyer_id, group_id, price):
     else:
       borrower_key = "%d" % user.id
       buyer_records[borrower_key] = amount
-      borrower_records[buyer_key] = -amount
+      borrower_records[buyer_id] = -amount
       buyer_records[buyer_key] = 0
 
       buyer.outstanding = json.dumps(buyer_records)
@@ -86,6 +86,9 @@ def create_app(test_config=None):
   @requires_auth('get:users')
   def get_users(payload):
     selection = User.query.all()
+    for user in selection:
+      user.total_owed = 0
+      user.outstanding = json.dumps({})
     users = [user.format() for user in selection]
 
     return jsonify({
