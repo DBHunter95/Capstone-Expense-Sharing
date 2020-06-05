@@ -16,7 +16,7 @@ class Lending_Test(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "lending_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = 'postgres://davidhunter@localhost:5432/lending_test' #"postgres://{}/{}".format('localhost:5432', self.database_name)
         setup_db(self.app)
 
         self.new_user1 = {
@@ -38,6 +38,26 @@ class Lending_Test(unittest.TestCase):
             'buyer_id': 1,
             'group_id': 1
         }
+
+        user_1 = User(name="Jedidiah", total_owed=0, outstanding=json.dumps({}))
+        user_2 = User(name="Barbara", total_owed=0, outstanding=json.dumps({}))
+
+        user_1.insert()
+        user_2.insert()
+
+        group_1 = Group(name="house")
+        group_1.insert()
+
+        group_1.people.append(user_1)
+        group_1.people.append(user_2)
+        group_1.update()
+
+        transaction_1 = Transaction(item="milk", price=3, buyer_id=1, group_id=1)
+        transaction_2 = Transaction(item="milk", price=3, buyer_id=1, group_id=1)
+        transaction_3 = Transaction(item="milk", price=3, buyer_id=1, group_id=1)
+        transaction_1.insert()
+        transaction_2.insert()
+        transaction_3.insert()
 
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -134,21 +154,21 @@ class Lending_Test(unittest.TestCase):
     '''Tests for Delete Transaction'''
    
     def test_delete_transactions(self):
-        res = self.client().delete('/transactions/32', headers = administrator_token)
+        res = self.client().delete('/transactions/1', headers = administrator_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
 
     def test_delete_transactions_without_permission(self):
-        res = self.client().delete('/transactions/33', headers = user_token)
+        res = self.client().delete('/transactions/2', headers = user_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
 
     def test_update_transactions(self):
         update = {"price":6}
-        res = self.client().patch('/transactions/34', json = update, headers = administrator_token)
+        res = self.client().patch('/transactions/3', json = update, headers = administrator_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -156,7 +176,7 @@ class Lending_Test(unittest.TestCase):
 
     def test_update_transactions_without_permissions(self):
         update = {"price":6}
-        res = self.client().patch('/transactions/34', json = update, headers = user_token)
+        res = self.client().patch('/transactions/4', json = update, headers = user_token)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)

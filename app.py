@@ -132,7 +132,8 @@ def create_app(test_config=None):
     #   abort(422)
 
     return jsonify({
-        'success': True
+        'success': True,
+        'new_user': new_user.format()
     })
 
 
@@ -156,7 +157,8 @@ def create_app(test_config=None):
       new_group.update()
 
     return jsonify({
-        'success': True
+        'success': True,
+        'new_group': new_group.format()
     })
 
 
@@ -219,6 +221,7 @@ def create_app(test_config=None):
 
     return jsonify({
         'success': True,
+        'transaction': transaction.format()
     })
 
 
@@ -251,7 +254,8 @@ def create_app(test_config=None):
       update_group_transaction(buyer_id, group_id, price)
 
     return jsonify({
-        'success': True
+        'success': True,
+        'transaction': transaction.format()
     })
 
 
