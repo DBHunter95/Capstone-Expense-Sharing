@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import json
 
-from models import setup_db, Transaction, User, Group, members
+from models import setup_db, Transaction, User, Group, members, db_drop_and_create_all
 from auth import AuthError, requires_auth
 
 # This is a function for updating user records when a group transaction is made.
@@ -121,6 +121,7 @@ def create_app(test_config=None):
   @app.route('/users', methods=['POST'])
   @requires_auth('post:users')
   def add_user(payload):
+    db_drop_and_create_all()
     body = request.get_json()
     name = body.get('name', None)
     
