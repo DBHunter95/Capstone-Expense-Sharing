@@ -255,7 +255,7 @@ def create_app(test_config=None):
 
     return jsonify({
         'success': True,
-        'transaction': transaction.format()
+        'transaction': new_transaction.format()
     })
 
 
