@@ -121,7 +121,6 @@ def create_app(test_config=None):
   @app.route('/users', methods=['POST'])
   @requires_auth('post:users')
   def add_user(payload):
-    db_drop_and_create_all()
     body = request.get_json()
     name = body.get('name', None)
     
