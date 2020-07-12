@@ -146,7 +146,7 @@ curl --request PATCH --header "Content-Type: application/json" --data '{"price":
 
 ### Testing
 
-A unittest can be run using the test_app.py file. This test can be performed locally, to run the tests adjust the database URL in "models.py" to a empty local database and uncomment the "db_drop_and_create_all()" line in the setup_db function. then you can run the test using "python test_app.py" in the command line. 
+A unittest can be run using the test_app.py file. This test can be performed locally, to run the tests adjust the database URL in "models.py" to an empty local database and uncomment the "db_drop_and_create_all()" line in the setup_db function. Then you can run the test using "python test_app.py" in the command line. 
 
 
 
