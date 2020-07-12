@@ -2,7 +2,7 @@
 
 ### Introduction
 
-This app is for the capstone project of the udacity full stack developer course. It is designed to show the use of RESTful APIS along with RBAC security throught the third party Auth0.
+This app is for the capstone project of the Udacity full stack developer course. It is designed to show the use of RESTful APIS along with RBAC security throught the third party Auth0.
 
 The app is designed to help groups of people share expenses. If people, for example a household, are buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or for 2 individuals). It will also maintain records of the total each user is owed/owes from one another and in total across all transactions.
 
@@ -10,7 +10,7 @@ The app is designed to help groups of people share expenses. If people, for exam
 
 The app is currently live on heroku, however if you want to run the app locally you can do so by downloading all requiremnts from the requirements.txt folder and then from the command line exporting FLASK_APP=app.py and then flask run.
 
-Note: There was a unusual error where in order for the code to run effectively locally the import addresses in the app.py file had to be .models and .auth rather than models and auth. If you are experiencing errors running the app locally please adjust this.
+Note: There was a unusual error where in order for the code to run effectively locally the import addresses in the app.py file had to be ".models" and ".auth" rather than "models" and "auth". If you are experiencing errors running the app locally please adjust this.
 
 ### Roles
 
