@@ -29,8 +29,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     total_owed = db.Column(db.Float)
+    # Outstanding is used as a python dictionary but stored as a JSON object
     outstanding = db.Column(db.String(500))
     transactions = db.relationship('Transaction', backref='user_transaction', lazy=True)
+    # Relationship with Group class to show which groups the users are in
     faction = db.relationship('Group', secondary=members, lazy='subquery',
                               backref=db.backref('people', lazy=True))
 
@@ -57,6 +59,7 @@ class Group(db.Model):
 
     def format(self):
         members = []
+        # Get's list of users in the group from the relationship with the User class
         for user in self.people:
             members.append({
                 "id": user.id,
@@ -93,6 +96,14 @@ class Transaction(db.Model):
         buyer_name = buyer.name
         group_name = ''
         borrower_name = ''
+
+        #This updates the price displayed if the it is a payment
+        price = 0
+
+        if self.item == "Payment":
+            price = (self.price/2)
+        else:
+            price = self.price
 
         if borrower is None:
             group_name = group.name
