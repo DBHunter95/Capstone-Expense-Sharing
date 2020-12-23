@@ -93,7 +93,7 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     item = db.Column(db.String(120))
-    date = db.Column(db.DateTime(), nullable=True)
+    date = db.Column(db.String, nullable=True)
     price = db.Column(db.Float)
     buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     borrower_id = db.Column(db.Integer)
@@ -107,7 +107,7 @@ class Transaction(db.Model):
         group_name = ''
         borrower_name = ''
 
-        #This updates the price displayed if the it is a payment
+        #This updates the price displayed if it is a payment
         price = 0
 
         if self.item == "Payment":
@@ -115,7 +115,10 @@ class Transaction(db.Model):
         else:
             price = self.price
 
-        if borrower is None:
+        if borrower is None and group is None:
+            group_name = 'deleted'
+        
+        elif borrower is None:
             group_name = group.name
         else:
             borrower_name = borrower.name
@@ -129,7 +132,8 @@ class Transaction(db.Model):
             'buyer_name': buyer_name,
             'borrower_name': borrower_name,
             'group_id': self.group_id,
-            'group_name': group_name
+            'group_name': group_name,
+            'item': self.item
         }
 
     def insert(self):

@@ -4,11 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import json
 
-from models import setup_db, Transaction, User, Group, members, db_drop_and_create_all
-from auth import AuthError, requires_auth
+from .models import setup_db, Transaction, User, Group, members, db_drop_and_create_all
+from .auth import AuthError, requires_auth
 
 # This is a function for updating user records when a group transaction is made.
-# It divides the price by the number of members of the group and then loops through updating the debt lists
+# It divides the price by the number of members of the group and then loops through every member of the group
+# updating the debt lists and the total each user is owed
 # Each user has a python dictionary called outstanding which stores their debts with other users
 # The key's in these dictionaries are the other users ID'd and the value's are the debts
 
@@ -18,37 +19,33 @@ def update_group_transaction(buyer_id, group_id, price):
   buyer = User.query.filter_by(id = buyer_id).one()
   buyer_records = json.loads(buyer.outstanding)
   amount = price/len(group.people)
-  buyer.total_owed += price
-  buyer.update()
 
-  for user in group.people:
+  try:
+    for user in group.people:
+      if buyer.id == user.id:
+        continue
 
-    borrower_records = json.loads(user.outstanding)
-    buyer_key = "%d" % buyer.id
-
-    if buyer_key in borrower_records:
+      borrower_records = json.loads(user.outstanding)
+      buyer_key = "%d" % buyer.id # This format is necessary for updating the "outstanding" dictionary to avoid duplicate entries.
       borrower_key = "%d" % user.id
-      buyer_records[borrower_key] += amount
-      borrower_records[buyer_key] -= amount
-      buyer_records[buyer_key] = 0 
 
+      if buyer_key in borrower_records:
+        buyer_records[borrower_key] += amount
+        borrower_records[buyer_key] -= amount 
+      
+      else:
+        buyer_records[borrower_key] = amount
+        borrower_records[buyer_id] = -amount
+      
       buyer.outstanding = json.dumps(buyer_records)
       user.outstanding = json.dumps(borrower_records)
       user.total_owed -= amount
+      buyer.total_owed += amount
       buyer.update()
       user.update()
-    
-    else:
-      borrower_key = "%d" % user.id
-      buyer_records[borrower_key] = amount
-      borrower_records[buyer_id] = -amount
-      buyer_records[buyer_key] = 0
-
-      buyer.outstanding = json.dumps(buyer_records)
-      user.outstanding = json.dumps(borrower_records)
-      user.total_owed -= amount
-      buyer.update()
-      user.update()
+  
+  except:
+    abort(422)
 
 # This is a function for updating user records when a transaction is made between two individuals.
 
@@ -201,20 +198,31 @@ def create_app(test_config=None):
     if transaction is None:
         abort(404)
 
-    #This updates the record of debts by passing the negative price to the appriate function (group or individual)
-    buyer = User.query.filter_by(id = transaction.buyer_id).one()
-    price = -transaction.price
-    buyer_id = transaction.buyer_id
-    group_id = transaction.group_id
-    
-    if transaction.borrower_id is None:
+    #If statement to confirm price is a number, if it is not a number it does not try to update the debt list
+    if isinstance(transaction.price, int) or isinstance(transaction.price, float):
+      #This updates the record of debts by passing the negative price to the appriate function (group or individual)
+      buyer = User.query.filter_by(id = transaction.buyer_id).one()
+      price = -transaction.price
+      buyer_id = transaction.buyer_id
       group_id = transaction.group_id
-      update_group_transaction(buyer_id, group_id, price)
+    
+      #Determines if the transaction was a group or individual transaction
+      if transaction.borrower_id is None or transaction.borrower_id == 0:
+        #If statement in case group has been deleted when someone tries to delete the transaction
+        if group_id is None or group_id == 0:
+          pass
+        else:
+          group_id = transaction.group_id
+          update_group_transaction(buyer_id, group_id, price)
 
+      else:
+        borrower_id = transaction.borrower_id
+        price = (price/2)
+        update_individual_transaction(buyer_id, borrower_id, price) 
+        
+    #pass statement for if price is not a number or contains extra characters
     else:
-      borrower_id = transaction.borrower_id
-      price = (price/2)
-      update_individual_transaction(buyer_id, borrower_id, price)
+      pass
 
     transaction.delete()
 
@@ -265,14 +273,14 @@ def create_app(test_config=None):
     borrower_id = body.get('borrower_id', None)
     group_id = body.get('group_id', None)
 
-    try:
-      new_transaction = Transaction(item=item, price=price, buyer_id=buyer_id,
-                              borrower_id=borrower_id, group_id=group_id
-                              )
-      new_transaction.insert()
+    # try:
+    new_transaction = Transaction(item=item, price=price, buyer_id=buyer_id,
+                            borrower_id=borrower_id, group_id=group_id
+                            )
+    new_transaction.insert()
  
-    except:
-        abort(422)
+    # except:
+    #     abort(422)
 
     buyer = User.query.filter_by(id=buyer_id).one()
 
