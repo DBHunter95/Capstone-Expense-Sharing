@@ -47,6 +47,11 @@ class User(db.Model):
     def update(self):
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -73,6 +78,11 @@ class Group(db.Model):
 
     def update(self):
         db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
 
     def insert(self):
         db.session.add(self)
@@ -113,7 +123,7 @@ class Transaction(db.Model):
         return {
             'id': self.id,
             'date': self.date,
-            'price': self.price,
+            'price': price,
             'buyer_id': self.buyer_id,
             'borrower id': self.borrower_id,
             'buyer_name': buyer_name,

@@ -159,6 +159,39 @@ def create_app(test_config=None):
         'new_group': new_group.format()
     })
 
+  @app.route('/users/<id>', methods=['DELETE'])
+  def delete_user(id):
+
+    user = User.query.filter_by(id = id).one_or_none()
+
+    if user is None:
+      print(id)
+      abort(404)
+        
+
+    user.delete()
+
+    return jsonify({
+        'success': True,
+        'delete': id
+    })
+
+  
+  @app.route('/groups/<id>', methods=['DELETE'])
+  def delete_group(id):
+
+    group = Group.query.filter_by(id = id).one_or_none()
+
+    if group is None:
+        abort(404)
+        
+    group.delete()
+
+    return jsonify({
+        'success': True,
+        'delete': id
+    })
+
 
   @app.route('/transactions/<id>', methods=['DELETE'])
   def delete_transaction(id):
