@@ -2,15 +2,24 @@
 
 ### Introduction
 
-This app is for the capstone project of the udacity full stack developer course. It is designed to show the use of RESTful APIS along with RBAC security through the third party Auth0.
 
-The app can be used to help groups of people share expenses. If people, for example a household, are buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or for 2 individuals). It will also maintain records of the total each user is owed/owes from one another and in total across all transactions.
+This app is for the capstone project of the Udacity full stack developer course. It is designed to show the use of RESTful APIs built in a Python Flask Application. It serves the frontend found in this repository: https://github.com/DBHunter95/Expense-sharing-frontend.
+
+The purpose of the app is to help groups of people share expenses. If someone in a group, for example a household, is buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or just 1 other individual). It will then maintain records of the total each user is owed/owes from each other user and in total across all transactions.
+
 
 ### Hosting locally
 
 The app is currently live on heroku, however if you want to run the app locally you can do so by downloading all requiremnts from the requirements.txt folder and then from the command line exporting FLASK_APP=app.py and then flask run.
 
-Note: There was a unusual error where in order for the code to run effectively locally the import addresses in the app.py file had to be .models and .auth rather than models and auth. If you are experiencing errors running the app locally please adjust this.
+Note: There was a unusual error where in order for the code to run effectively locally the import addresses in the app.py file had to be ".models" and ".auth" rather than "models" and "auth". If you are experiencing errors running the app locally please adjust this.
+
+
+### Roles
+
+!!! Currently the Role Based Authorisation has been disabled in order to make the app more easily viewable !!!
+
+The app is equipped with two roles through Auth0: administrators and users. The administrators have total permissions over all the endpoints whilst the users can use all endpoints except those that edit existing transactions. All endpoints require a Json token.
 
 ## API Reference
 
@@ -137,7 +146,7 @@ curl --request PATCH --header "Content-Type: application/json" --data '{"price":
 
 ### Testing
 
-A unittest can be run using the test_app.py file. This test can be performed locally, to run the tests adjust the database URL in "models.py" to a empty local database and uncomment the "db_drop_and_create_all()" line in the setup_db function. then you can run the test using "python test_app.py" in the command line. 
+A unittest can be run using the test_app.py file. This test can be performed locally, to run the tests adjust the database URL in "models.py" to an empty local database and uncomment the "db_drop_and_create_all()" line in the setup_db function. Then you can run the test using "python test_app.py" in the command line. 
 
 
 
