@@ -2,9 +2,9 @@
 
 ### Introduction
 
-This app is for the capstone project of the Udacity full stack developer course. It is designed to show the use of RESTful APIS along with RBAC security throught the third party Auth0.
+This app is for the capstone project of the Udacity full stack developer course. It is designed to show the use of RESTful APIs built in a Python Flask Application. It serves the frontend found in this repository: https://github.com/DBHunter95/Expense-sharing-frontend.
 
-The app is designed to help groups of people share expenses. If people, for example a household, are buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or for 2 individuals). It will also maintain records of the total each user is owed/owes from one another and in total across all transactions.
+The purpose of the app is to help groups of people share expenses. If someone in a group, for example a household, is buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or just 1 other individual). It will then maintain records of the total each user is owed/owes from each other user and in total across all transactions.
 
 ### Hosting locally
 
@@ -14,11 +14,9 @@ Note: There was a unusual error where in order for the code to run effectively l
 
 ### Roles
 
+!!! Currently the Role Based Authorisation has been disabled in order to make the app more easily viewable !!!
+
 The app is equipped with two roles through Auth0: administrators and users. The administrators have total permissions over all the endpoints whilst the users can use all endpoints except those that edit existing transactions. All endpoints require a Json token.
-
-administrator_token = 'authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZLRUNDVUI2T2RTY0txZ2ZfRW5fQiJ9.eyJpc3MiOiJodHRwczovL2RhdmlkLWNhcHN0b25lLmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJSd3k0UEpvWFZqbWFQYzQ0bWx6dzdyN3NwaWF4TktNNkBjbGllbnRzIiwiYXVkIjoiTGVuZGluZ19TZXJ2aWNlIiwiaWF0IjoxNTkxMzY0Mjc3LCJleHAiOjE1OTE0NTA2NzcsImF6cCI6IlJ3eTRQSm9YVmptYVBjNDRtbHp3N3I3c3BpYXhOS002Iiwic2NvcGUiOiJnZXQ6dHJhbnNhY3Rpb25zIGdldDp1c2VycyBnZXQ6Z3JvdXBzIHBvc3Q6dXNlcnMgcG9zdDpncm91cHMgcG9zdDp0cmFuc2FjdGlvbnMgcGF0Y2g6dHJhbnNhY3Rpb25zIGRlbGV0ZTp0cmFuc2FjdGlvbiIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsInBlcm1pc3Npb25zIjpbImdldDp0cmFuc2FjdGlvbnMiLCJnZXQ6dXNlcnMiLCJnZXQ6Z3JvdXBzIiwicG9zdDp1c2VycyIsInBvc3Q6Z3JvdXBzIiwicG9zdDp0cmFuc2FjdGlvbnMiLCJwYXRjaDp0cmFuc2FjdGlvbnMiLCJkZWxldGU6dHJhbnNhY3Rpb24iXX0.VHbmxj0IrPrGFUElUdaAlNq3e4N8lvks5lFDH1ZybbniBrNOMUI1Jl7SFGkAQxXDReQLFLDYyKbeTuftPtu9V3UROJ8yOX-jndW2gifUL4lee8b1gXaOp7Fj0GnByqrL8hIBHY38lYDHn_Dch6phqy5meD4fHPSNC3FnYYKyi3w8_sIam9moOrkGYv7U7iIsw4r1qqhS5-vShNHv5NtNfK9VxaIQoy_6Y6UWECgVfUg9fu-8Wq8ROYzPMZREaxrvbnZJxuDvXl23uD_JDo1f4H2142NQLQS7uBCLeYs3qzYVD0QKtP4sT1WAqXp85YAhiVV5zxrgozLl_0TTaqy__g'
-
-user_token = 'authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZLRUNDVUI2T2RTY0txZ2ZfRW5fQiJ9.eyJpc3MiOiJodHRwczovL2RhdmlkLWNhcHN0b25lLmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJSd3k0UEpvWFZqbWFQYzQ0bWx6dzdyN3NwaWF4TktNNkBjbGllbnRzIiwiYXVkIjoiTGVuZGluZ19TZXJ2aWNlIiwiaWF0IjoxNTkxMzY0MjA1LCJleHAiOjE1OTE0NTA2MDUsImF6cCI6IlJ3eTRQSm9YVmptYVBjNDRtbHp3N3I3c3BpYXhOS002Iiwic2NvcGUiOiJnZXQ6dHJhbnNhY3Rpb25zIGdldDp1c2VycyBnZXQ6Z3JvdXBzIHBvc3Q6dXNlcnMgcG9zdDpncm91cHMgcG9zdDp0cmFuc2FjdGlvbnMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMiLCJwZXJtaXNzaW9ucyI6WyJnZXQ6dHJhbnNhY3Rpb25zIiwiZ2V0OnVzZXJzIiwiZ2V0Omdyb3VwcyIsInBvc3Q6dXNlcnMiLCJwb3N0Omdyb3VwcyIsInBvc3Q6dHJhbnNhY3Rpb25zIl19.i8RSi3kGJT8DkWm5eb0574HvqBo2tPHqaDrpW32QikD2QVcYEe0Mn8DYp5vrsrLn2zPOSmVvRNvLkZWfCaR8WabHzUaMtBot53GFA1FYEFx7IiacM9Xe0973JpLV21-zw0sUBiQHz3g64wxfNuY_mXbWO9Cx8SEfbrNCkFtVOFimpXNPe6kk-AxPbOsnYDjFwur-5DzVK8h0xeUL-jikbfos7I15wJS_UEO2CXY05k_z2akjsNuoQ2bZdWbTnNm7Eeq93XIGQGgpngnHYlw-IlZiI1b9Th0xsKDwBn9rOfmX-mZEIAQML7ackTtU9JFrmvFOxhEqh3XwnlhKpd-IuQ'
 
 ## API Reference
 
