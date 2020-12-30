@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import json
 
-from .models import setup_db, Transaction, User, Group, members, db_drop_and_create_all
-from .auth import AuthError, requires_auth
+from models import setup_db, Transaction, User, Group, members, db_drop_and_create_all
+from auth import AuthError, requires_auth
 
 # This is a function for updating user records when a group transaction is made.
 # It divides the price by the number of members of the group and then loops through every member of the group
