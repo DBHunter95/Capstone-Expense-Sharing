@@ -29,8 +29,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     total_owed = db.Column(db.Float)
+    # Outstanding is used as a python dictionary but stored as a JSON object
     outstanding = db.Column(db.String(500))
     transactions = db.relationship('Transaction', backref='user_transaction', lazy=True)
+    # Relationship with Group class to show which groups the users are in
     faction = db.relationship('Group', secondary=members, lazy='subquery',
                               backref=db.backref('people', lazy=True))
 
@@ -45,6 +47,11 @@ class User(db.Model):
     def update(self):
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -57,6 +64,7 @@ class Group(db.Model):
 
     def format(self):
         members = []
+        # Get's list of users in the group from the relationship with the User class
         for user in self.people:
             members.append({
                 "id": user.id,
@@ -71,6 +79,11 @@ class Group(db.Model):
     def update(self):
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -80,7 +93,7 @@ class Transaction(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     item = db.Column(db.String(120))
-    date = db.Column(db.DateTime(), nullable=True)
+    date = db.Column(db.String, nullable=True)
     price = db.Column(db.Float)
     buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     borrower_id = db.Column(db.Integer)
@@ -94,7 +107,18 @@ class Transaction(db.Model):
         group_name = ''
         borrower_name = ''
 
-        if borrower is None:
+        #This updates the price displayed if it is a payment
+        price = 0
+
+        if self.item == "Payment":
+            price = (self.price/2)
+        else:
+            price = self.price
+
+        if borrower is None and group is None:
+            group_name = 'deleted'
+        
+        elif borrower is None:
             group_name = group.name
         else:
             borrower_name = borrower.name
@@ -102,13 +126,14 @@ class Transaction(db.Model):
         return {
             'id': self.id,
             'date': self.date,
-            'price': self.price,
+            'price': price,
             'buyer_id': self.buyer_id,
             'borrower id': self.borrower_id,
             'buyer_name': buyer_name,
             'borrower_name': borrower_name,
             'group_id': self.group_id,
-            'group_name': group_name
+            'group_name': group_name,
+            'item': self.item
         }
 
     def insert(self):
