@@ -5,6 +5,8 @@
 
 This app is for the capstone project of the Udacity full stack developer course. It is designed to show the use of RESTful APIs built in a Python Flask Application. It serves the frontend found in this repository: https://github.com/DBHunter95/Expense-sharing-frontend.
 
+The app is currently live on Heroku and can be viewed here: https://expense-sharing-demo.herokuapp.com/
+
 The purpose of the app is to help groups of people share expenses. If someone in a group, for example a household, is buying something for everyone they can enter the transaction into the app and the app will determine how much the buyer is owed from each person (be it for a group or just 1 other individual). It will then maintain records of the total each user is owed/owes from each other user and in total across all transactions.
 
 
